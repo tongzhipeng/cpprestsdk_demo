@@ -10,6 +10,7 @@ using namespace web::http::client;          // HTTP client features
 using namespace concurrency::streams;       // Asynchronous streams
 
 int main(int, char**) {
+    printf("cpprestdemo...\n");
     auto fileStream = std::make_shared<ostream>();
     pplx::task<void> requestTask = fstream::open_ostream(U("results.html")).then([=](ostream outFile)
     {
@@ -31,5 +32,16 @@ int main(int, char**) {
     }).then([=](size_t)
     {
         return fileStream->close();
-    });;
+    });
+
+
+    try
+    {
+        requestTask.wait();
+    }
+    catch (const std::exception &e)
+    {
+        printf("Error exception:%s\n", e.what());
+    }
+    return 0;
 }
